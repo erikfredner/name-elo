@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Baby Name ELO Rater</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="loadingOverlay" class="loading-overlay">
+      <div class="loading-box">
+        <p>Loading dataset… <span id="loadingPercent">0%</span></p>
+        <div class="progress-bar">
+          <div id="loadingBar"></div>
+        </div>
+      </div>
+    </div>
+
+    <header class="toolbar">
+      <div class="left">
+        <h1>Baby Name ELO</h1>
+        <div class="status">
+          <span id="datasetLabel">Loading dataset…</span>
+          <span>• Matches: <strong id="matchCount">0</strong></span>
+        </div>
+      </div>
+      <div class="right">
+        <button id="filterBtn" class="primary action-btn" title="Open filters">Filter</button>
+        <button id="resultsBtn" class="primary results-btn" title="View live rankings in a new window">Results</button>
+        <div class="k-container">
+          <label for="kFactor">K</label>
+          <input id="kFactor" type="number" min="4" max="64" step="1" value="24" />
+        </div>
+      </div>
+    </header>
+
+    <section class="filters-panel" id="filtersPanel">
+      <div class="filters-dialog">
+        <div class="filters-head">
+          <h2>Filter names</h2>
+          <button id="filtersCloseBtn" class="icon-btn" type="button" aria-label="Close filters">×</button>
+        </div>
+        <p class="filter-warning">Applying filters clears your current matches and restarts the ranking session.</p>
+        <div class="filters-grid">
+          <label class="filter-field">
+            <span>Sex</span>
+            <select id="sexFilter">
+              <option value="any">Any</option>
+              <option value="F">Female</option>
+              <option value="M">Male</option>
+            </select>
+          </label>
+          <label class="filter-field">
+            <span>Rank range</span>
+            <div class="range-inputs">
+              <input id="rankMin" type="number" min="1" placeholder="Min" />
+              <span>–</span>
+              <input id="rankMax" type="number" min="1" placeholder="Max" />
+            </div>
+          </label>
+          <label class="filter-field">
+            <span>Year range</span>
+            <div class="range-inputs">
+              <input id="yearMin" type="number" placeholder="Min" />
+              <span>–</span>
+              <input id="yearMax" type="number" placeholder="Max" />
+            </div>
+          </label>
+        </div>
+        <button id="applyFiltersBtn" class="primary">Apply filters &amp; Start</button>
+      </div>
+    </section>
+
+    <main class="arena">
+      <div id="arenaMessage" class="arena-message">Loading dataset…</div>
+      <div id="leftCard" class="card" data-side="left" tabindex="0">
+        <div class="name" id="leftName">Loading dataset…</div>
+        <div class="meta">
+          <div>Sex: <span id="leftSex">–</span></div>
+          <div>Rank: <span id="leftRank">–</span></div>
+          <div>Year: <span id="leftYear">–</span></div>
+          <div>Percent: <span id="leftMedian">–</span></div>
+          <div>ELO: <span id="leftElo">–</span></div>
+        </div>
+        <div class="hint">Press ← to choose</div>
+        <button id="leftRemoveBtn" class="remove-btn" type="button">Remove name</button>
+      </div>
+      <div id="rightCard" class="card" data-side="right" tabindex="0">
+        <div class="name" id="rightName">Loading dataset…</div>
+        <div class="meta">
+          <div>Sex: <span id="rightSex">–</span></div>
+          <div>Rank: <span id="rightRank">–</span></div>
+          <div>Year: <span id="rightYear">–</span></div>
+          <div>Percent: <span id="rightMedian">–</span></div>
+          <div>ELO: <span id="rightElo">–</span></div>
+        </div>
+        <div class="hint">Press → to choose</div>
+        <button id="rightRemoveBtn" class="remove-btn" type="button">Remove name</button>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <span>Keyboard: ← = left, → = right. Click to pick.</span>
+      <span>Remove: X = left, C = right.</span>
+      <span>Pairings biased to similar ELO; occasional random exploration.</span>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+  </html>

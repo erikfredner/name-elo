@@ -34,8 +34,8 @@
       </div>
     </header>
 
-    <section class="filters-panel" id="filtersPanel">
-      <div class="filters-dialog">
+    <section class="overlay-panel" id="filtersPanel">
+      <div class="overlay-dialog filter-dialog">
         <div class="filters-head">
           <h2>Filter names</h2>
           <button id="filtersCloseBtn" class="icon-btn" type="button" aria-label="Close filters">×</button>
@@ -71,6 +71,18 @@
       </div>
     </section>
 
+    <section class="overlay-panel" id="resultsPanel">
+      <div class="overlay-dialog results-dialog">
+        <div class="filters-head">
+          <h2>Current results</h2>
+          <button id="resultsCloseBtn" class="icon-btn" type="button" aria-label="Close results">×</button>
+        </div>
+        <div id="resultsContent" class="results-content">
+          <p class="results-empty">Apply filters and play a few rounds to see live rankings.</p>
+        </div>
+      </div>
+    </section>
+
     <main class="arena">
       <div id="arenaMessage" class="arena-message">Loading dataset…</div>
       <div id="leftCard" class="card" data-side="left" tabindex="0">
@@ -82,7 +94,7 @@
           <div>Percent: <span id="leftMedian">–</span></div>
           <div>ELO: <span id="leftElo">–</span></div>
         </div>
-        <div class="hint">Press ← to choose</div>
+        <div class="hint desktop-hint">Press ← to choose</div>
         <button id="leftRemoveBtn" class="remove-btn" type="button">Remove name</button>
       </div>
       <div id="rightCard" class="card" data-side="right" tabindex="0">
@@ -94,7 +106,7 @@
           <div>Percent: <span id="rightMedian">–</span></div>
           <div>ELO: <span id="rightElo">–</span></div>
         </div>
-        <div class="hint">Press → to choose</div>
+        <div class="hint desktop-hint">Press → to choose</div>
         <button id="rightRemoveBtn" class="remove-btn" type="button">Remove name</button>
       </div>
     </main>

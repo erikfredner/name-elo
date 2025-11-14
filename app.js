@@ -50,6 +50,11 @@ const el = {
     yearMax: document.getElementById('yearMax'),
     applyBtn: document.getElementById('applyFiltersBtn'),
   },
+  resultsPanel: {
+    panel: document.getElementById('resultsPanel'),
+    closeBtn: document.getElementById('resultsCloseBtn'),
+    content: document.getElementById('resultsContent'),
+  },
   left: {
     card: document.getElementById('leftCard'),
     name: document.getElementById('leftName'),
@@ -93,6 +98,19 @@ function showFilterPanel() {
 
 function hideFilterPanel() {
   el.filters.panel?.classList.remove('open');
+}
+
+function showResultsPanel() {
+  if (!state.items.length) {
+    alert('Apply filters and start rating names before viewing results.');
+    return;
+  }
+  renderResultsContent();
+  el.resultsPanel.panel?.classList.add('open');
+}
+
+function hideResultsPanel() {
+  el.resultsPanel.panel?.classList.remove('open');
 }
 
 function setLoadingVisible(visible) {
@@ -514,19 +532,14 @@ function onPick(side) {
   }, DURATION);
 }
 
-function downloadFile(filename, content, mime) {
-  const blob = new Blob([content], { type: mime });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(a.href), 2500);
-}
-
-function renderResultsTable(doc, items) {
-  const sorted = [...items].sort((a, b) => b.elo - a.elo || a.name.localeCompare(b.name));
+function renderResultsContent() {
+  const container = el.resultsPanel.content;
+  if (!container) return;
+  if (!state.items.length) {
+    container.innerHTML = '<p class="results-empty">Apply filters and play a few rounds to see live rankings.</p>';
+    return;
+  }
+  const sorted = [...state.items].sort((a, b) => b.elo - a.elo || a.name.localeCompare(b.name));
   const rows = sorted.map((it, idx) => `
     <tr>
       <td>${idx + 1}</td>
@@ -541,63 +554,26 @@ function renderResultsTable(doc, items) {
       <td>${it.losses}</td>
     </tr>
   `).join('');
-  doc.write(`
-    <!doctype html>
-    <html lang="en">
-      <head>
-        <meta charset="utf-8" />
-        <title>Name ELO Results</title>
-        <style>
-          body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; margin: 0; padding: 24px; background: #f8fafc; color: #0f172a; }
-          h1 { margin-top: 0; font-size: 24px; color: #1d4ed8; }
-          table { width: 100%; border-collapse: collapse; margin-top: 16px; background: #fff; box-shadow: 0 6px 18px rgba(15,23,42,0.12); border-radius: 12px; overflow: hidden; }
-          thead { background: #1d4ed8; color: #fff; }
-          th, td { padding: 10px 12px; text-align: left; font-size: 14px; }
-          tbody tr:nth-child(odd) { background: #f8fafc; }
-          tbody tr:hover { background: #e0f2fe; }
-          td:first-child, th:first-child { width: 56px; text-align: center; }
-          .meta { margin-top: 8px; color: #475569; font-size: 14px; }
-        </style>
-      </head>
-      <body>
-        <h1>Live Results</h1>
-        <div class="meta">Total names: ${items.length}</div>
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Sex</th>
-              <th>Rank</th>
-              <th>Year</th>
-              <th>Percent</th>
-              <th>ELO</th>
-              <th>Games</th>
-              <th>Wins</th>
-              <th>Losses</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rows}
-          </tbody>
-        </table>
-      </body>
-    </html>
-  `);
-  doc.close();
-}
-
-function openResultsWindow() {
-  if (!state.items.length) {
-    alert('Apply filters and start rating before viewing results.');
-    return;
-  }
-  const win = window.open('', '_blank');
-  if (!win) {
-    alert('Unable to open results window. Allow pop-ups for this site.');
-    return;
-  }
-  renderResultsTable(win.document, state.items);
+  container.innerHTML = `
+    <div class="results-meta">Total names: ${sorted.length} • Matches: ${state.totalMatches}</div>
+    <table class="results-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Sex</th>
+          <th>Rank</th>
+          <th>Year</th>
+          <th>Percent</th>
+          <th>ELO</th>
+          <th>Games</th>
+          <th>Wins</th>
+          <th>Losses</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
 }
 
 function renderStatus() {
@@ -751,7 +727,7 @@ el.kFactor.addEventListener('change', () => {
   if (isFinite(v) && v >= 4 && v <= 64) state.k = v;
 });
 if (el.resultsBtn) {
-  el.resultsBtn.addEventListener('click', openResultsWindow);
+  el.resultsBtn.addEventListener('click', showResultsPanel);
 }
 if (el.filterBtn) {
   el.filterBtn.addEventListener('click', showFilterPanel);
@@ -762,6 +738,14 @@ if (el.filters.closeBtn) {
 if (el.filters.panel) {
   el.filters.panel.addEventListener('click', (e) => {
     if (e.target === el.filters.panel) hideFilterPanel();
+  });
+}
+if (el.resultsPanel.closeBtn) {
+  el.resultsPanel.closeBtn.addEventListener('click', hideResultsPanel);
+}
+if (el.resultsPanel.panel) {
+  el.resultsPanel.panel.addEventListener('click', (e) => {
+    if (e.target === el.resultsPanel.panel) hideResultsPanel();
   });
 }
 if (el.filters.applyBtn) {
